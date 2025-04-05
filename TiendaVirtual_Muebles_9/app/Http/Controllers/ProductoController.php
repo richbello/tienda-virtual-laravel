@@ -7,59 +7,55 @@ use Illuminate\Http\Request;
 
 class ProductoController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    // Listar todos los productos
     public function index()
     {
-        //
+        $productos = Producto::all();
+        return response()->json([
+            'mensaje' => 'Productos listados exitosamente',
+            'data' => $productos
+        ], 200);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
+    // Guardar nuevo producto
     public function store(Request $request)
     {
-        //
+        $producto = Producto::create($request->all());
+        return response()->json([
+            'mensaje' => 'Producto creado exitosamente',
+            'data' => $producto
+        ], 201);
     }
 
-    /**
-     * Display the specified resource.
-     */
+    // Mostrar un solo producto
     public function show(Producto $producto)
     {
-        //
+        return response()->json([
+            'mensaje' => 'Producto encontrado exitosamente',
+            'data' => $producto
+        ], 200);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Producto $producto)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
+    // Actualizar un producto existente
     public function update(Request $request, Producto $producto)
     {
-        //
+        $producto->update($request->all());
+        return response()->json([
+            'mensaje' => 'Producto actualizado exitosamente',
+            'data' => $producto
+        ], 200);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
+    // Eliminar un producto
     public function destroy(Producto $producto)
     {
-        //
+        $producto->delete();
+        return response()->json([
+            'mensaje' => 'Producto eliminado exitosamente'
+        ], 204);
     }
+
+    // Estos métodos no se usan en APIs REST, pero los dejamos vacíos
+    public function create() {}
+    public function edit(Producto $producto) {}
 }
