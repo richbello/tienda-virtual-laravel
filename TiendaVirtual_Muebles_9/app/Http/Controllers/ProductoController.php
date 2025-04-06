@@ -10,52 +10,61 @@ class ProductoController extends Controller
     // Listar todos los productos
     public function index()
     {
-        $productos = Producto::all();
-        return response()->json([
-            'mensaje' => 'Productos listados exitosamente',
-            'data' => $productos
-        ], 200);
+        return response()->json(Producto::all(), 200);
     }
 
-    // Guardar nuevo producto
+    // Crear un nuevo producto
     public function store(Request $request)
     {
+        $request->validate([
+            'nombre' => 'required|string|max:255',
+            'precio' => 'required|numeric',
+            'descripcion' => 'nullable|string',
+        ]);
+
         $producto = Producto::create($request->all());
-        return response()->json([
-            'mensaje' => 'Producto creado exitosamente',
-            'data' => $producto
-        ], 201);
+
+        return response()->json($producto, 201);
     }
 
-    // Mostrar un solo producto
-    public function show(Producto $producto)
+    // Mostrar un producto específico
+    public function show($id)
     {
-        return response()->json([
-            'mensaje' => 'Producto encontrado exitosamente',
-            'data' => $producto
-        ], 200);
+        $producto = Producto::find($id);
+
+        if (!$producto) {
+            return response()->json(['mensaje' => 'Producto no encontrado'], 404);
+        }
+
+        return response()->json($producto, 200);
     }
 
-    // Actualizar un producto existente
-    public function update(Request $request, Producto $producto)
+    // Actualizar un producto
+    public function update(Request $request, $id)
     {
+        $producto = Producto::find($id);
+
+        if (!$producto) {
+            return response()->json(['mensaje' => 'Producto no encontrado'], 404);
+        }
+
         $producto->update($request->all());
-        return response()->json([
-            'mensaje' => 'Producto actualizado exitosamente',
-            'data' => $producto
-        ], 200);
+
+        return response()->json($producto, 200);
     }
 
     // Eliminar un producto
-    public function destroy(Producto $producto)
+    public function destroy($id)
     {
-        $producto->delete();
-        return response()->json([
-            'mensaje' => 'Producto eliminado exitosamente'
-        ], 204);
-    }
+        $producto = Producto::find($id);
 
-    // Estos métodos no se usan en APIs REST, pero los dejamos vacíos
-    public function create() {}
-    public function edit(Producto $producto) {}
+        if (!$producto) {
+            return response()->json(['mensaje' => 'Producto no encontrado'], 404);
+        }
+
+        $producto->delete();
+
+        return response()->json(['mensaje' => 'Producto eliminado'], 200);
+    }
 }
+
