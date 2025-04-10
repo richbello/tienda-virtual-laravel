@@ -12,7 +12,7 @@ return new class extends Migration {
             $table->string('nombre');
             $table->text('descripcion');
             $table->decimal('precio', 10, 2);
-            $table->unsignedBigInteger('categoria_id');
+            $table->unsignedBigInteger('categoria_id')->nullable(); // <- solo una vez y con nullable
             $table->timestamps();
 
             $table->foreign('categoria_id')->references('id')->on('categorias')->onDelete('cascade');
