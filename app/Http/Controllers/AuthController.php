@@ -22,9 +22,9 @@ class AuthController extends Controller
         }
 
         $user = User::create([
-            'name' => $request->name, // Aquí usamos "name"
+            'nombre' => $request->nombre, // Aquí usamos "name"
             'email' => $request->email,
-            'password' => Hash::make($request->password),
+            'password' => bcrypt($request->password),
         ]);
 
         $token = $user->createToken('TiendaVirtualToken')->plainTextToken;
