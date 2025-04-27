@@ -1,69 +1,34 @@
 <?php
 
-namespace App\Http\Controllers;
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ProductoController;
+use App\Http\Controllers\AuthController;
 
-use Illuminate\Http\Request;
-use App\Models\Producto;
-use Illuminate\Http\JsonResponse;
+/*
+|--------------------------------------------------------------------------
+| Rutas Web
+|--------------------------------------------------------------------------
+|
+| Aquí puedes registrar las rutas para tu aplicación web. Estas rutas son
+| para manejo a través de los navegadores.
+|
+*/
 
-class ProductoController extends Controller
-{
-    // Método para guardar un nuevo producto
-    public function guardar(Request $request): JsonResponse
-    {
-        // Validación básica
-        $request->validate([
-            'nombre' => 'required|string|max:255',
-            'precio' => 'required|numeric|min:0',
-        ]);
+Route::get('/', function () {
+    return view('welcome');
+});
 
-        try {
-            $producto = new Producto();
-            $producto->nombre = $request->nombre;
-            $producto->precio = $request->precio;
-            $producto->save();
+// Rutas RESTful para productos
+Route::post('/productos', [ProductoController::class, 'store']); // Crear producto
+Route::get('/productos', [ProductoController::class, 'index']); // Obtener todos los productos
+Route::get('/productos/{id}', [ProductoController::class, 'show']); // Mostrar un producto por ID
+Route::put('/productos/{id}', [ProductoController::class, 'update']); // Actualizar producto
+Route::delete('/productos/{id}', [ProductoController::class, 'destroy']); // Eliminar producto
 
-            return response()->json([
-                'message' => 'Producto creado exitosamente',
-                'producto' => $producto,
-            ], 201); // Código 201 = creado exitosamente
-        } catch (\Exception $e) {
-            return response()->json([
-                'error' => 'No se pudo guardar el producto',
-                'detalles' => $e->getMessage()
-            ], 500); // Error del servidor
-        }
-    }
+// Ruta pública para registrar usuarios (si usas autenticación)
+Route::post('/register', [AuthController::class, 'register']);
 
-    // Método para mostrar un producto por ID
-    public function mostrar($id): JsonResponse
-    {
-        $producto = Producto::find($id);
-
-        if (!$producto) {
-            return response()->json([
-                'error' => 'Producto no encontrado',
-            ], 404);
-        }
-
-        return response()->json($producto, 200);
-    }
-
-    // Método para eliminar un producto por ID
-    public function eliminar($id): JsonResponse
-    {
-        $producto = Producto::find($id);
-
-        if (!$producto) {
-            return response()->json([
-                'error' => 'Producto no encontrado',
-            ], 404);
-        }
-
-        $producto->delete();
-
-        return response()->json([
-            'message' => 'Producto eliminado exitosamente',
-        ], 200);
-    }
-}
+// Ruta protegida para obtener el usuario autenticado
+Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+    return $request->user();
+});
