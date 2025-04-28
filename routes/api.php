@@ -13,12 +13,16 @@ use App\Http\Controllers\CartController;
 */
 
 // Rutas RESTful para productos
-Route::prefix('productos')->group(function () {
+    Route::prefix('productos')->group(function () {
     Route::post('/', [ProductoController::class, 'store']);  // Crear un producto
     Route::get('/', [ProductoController::class, 'index']);  // Obtener todos los productos
     Route::get('/{id}', [ProductoController::class, 'show']);  // Obtener un producto por ID
     Route::put('/{id}', [ProductoController::class, 'update']);  // Actualizar un producto
+    //Route::delete('productos/{id}', [ProductoController::class, 'destroy']);
     Route::delete('/{id}', [ProductoController::class, 'destroy']);  // Eliminar un producto
+
+
+    // Eliminar un producto
 });
 
 // Ruta pública para registrar usuarios

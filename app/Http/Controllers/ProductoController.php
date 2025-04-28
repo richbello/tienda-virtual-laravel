@@ -25,4 +25,16 @@ class ProductoController extends Controller
         // Retornar una respuesta
         return response()->json($producto, 201);
     }
+
+    public function destroy($id)
+{
+    $producto = Producto::findOrFail($id);
+
+    if (!$producto) {
+        return response()->json(['message' => 'Producto no encontrado'], 404);
+    }
+
+    $producto->delete();
+    return response()->json(['message' => 'Producto eliminado correctamente'], 200);
+}
 }
